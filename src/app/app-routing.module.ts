@@ -12,24 +12,8 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'game',
-    loadChildren: () => import('./game/game.module').then( m => m.GamePageModule)
-  },
-  {
     path: 'login',
     loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
-  },
-  {
-    path: 'newGame',
-    loadChildren: () => import('./newGame/newGame.module').then( m => m.NewGamePageModule)
-  },
-  {
-    path: 'gamesInPlay',
-    loadChildren: () => import('./gamesInPlay/gamesInPlay.module').then( m => m.GamesInPlayPageModule)
-  },
-  {
-    path: 'stats',
-    loadChildren: () => import('./stats/stats.module').then( m => m.StatsPageModule)
   }
 ];
 

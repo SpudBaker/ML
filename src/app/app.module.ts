@@ -11,8 +11,6 @@ import { getApp, provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import { connectFirestoreEmulator, Firestore, getFirestore, initializeFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from './../environments/environment';
-import { USE_EMULATOR as USE_AUTH_EMULATOR } from '@angular/fire/compat/auth';
-import { USE_EMULATOR as USE_FIRESTORE_EMULATOR } from '@angular/fire/compat/firestore';
 
 @NgModule({
   declarations: [AppComponent],
