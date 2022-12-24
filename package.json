@@ -6,7 +6,7 @@
   "scripts": {
     "ng": "ng",
     "deploy":"ng build --configuration=production && firebase deploy",
-    "emulators": "firebase emulators:start",
+    "emulators": "firebase emulators:start --export-on-exit=c:/development/emulatorData/MP/data --import=c:/development/emulatorData/MP/data",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",

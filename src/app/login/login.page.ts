@@ -19,30 +19,6 @@ export class LoginPage {
 
   constructor(private authService: AuthService) {}
 
-  private register(){
-    this.loginErrMessage = null;
-    from(this.authService.createUserWithEmailAndPassword(this.inputEmail, this.inputPassword))
-    .pipe(
-      first(),
-      catchError(err => {
-        switch (err.code){
-          case ('auth/invalid-email'):
-            this.loginErrMessage = 'Enter the correct email format';
-            break;
-          case ('auth/email-already-in-use'):
-            this.loginErrMessage = 'Email address is alreday registered';
-            break;
-          case ('auth/weak-password'):
-            this.loginErrMessage = 'Create a stronger password when registering';
-            break;
-          default:
-            this.loginErrMessage = err.code;
-        };
-        return of(void 0);
-      })
-    ).subscribe();
-  }
-
   public resetPassword(){
     this.loginErrMessage = null;
     if (!this.inputEmail){
@@ -57,6 +33,8 @@ export class LoginPage {
         switch (err.code){
           case ('auth/invalid-email'):
             this.loginErrMessage = 'Enter the correct email format';
+          case ('auth/user-not-found'):
+            this.loginErrMessage = 'Email not recognised';
           default:
             this.loginErrMessage = err.code;
         };
@@ -80,7 +58,7 @@ export class LoginPage {
             this.loginErrMessage = 'Enter the correct email format';
             break;
           case('auth/user-not-found'):
-            this.register();
+            this.loginErrMessage = 'email not recognised';
             break;
           case ('auth/wrong-password'):
             this.loginErrMessage = 'Wrong password - try again or reset';
