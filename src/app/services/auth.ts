@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, 
-    signOut, user, User } from '@angular/fire/auth';
+    signOut, user, User, UserCredential } from '@angular/fire/auth';
 import { collection, doc, docData, Firestore, getDocs, query, setDoc, where } from '@angular/fire/firestore';
 
 import { EMPTY, from, Observable, of } from 'rxjs';
@@ -35,16 +35,20 @@ export class AuthService{
         return this.auth;
     }
 
-    public getLoginStatus(): Observable<User>{
+    public getLoginStatus(): Observable<any>{
         return user(this.auth).pipe(
             switchMap(data => {
                 if(data){
-                    this.user = new Globals.User(data.email, data.uid, null);
                     if(!this.loggedIn){
-                        this.router.navigate(['home']);
-                        this.loggedIn = true;
-                    }
-                    return of(data); 
+                        return this.getUserDatabaseRecordByID(data.uid, data.email).pipe(
+                            switchMap(user => {
+                                console.log('auth service - logged in user', user);
+                                this.user = user;
+                                this.loggedIn = true;
+                                return this.router.navigate(['home']);
+                            })
+                        )
+                    };
                 } else {
                     this.user = undefined;
                     this.loggedIn = false;
@@ -55,11 +59,11 @@ export class AuthService{
         );
     }
 
-    public getUserDatabaseRecordByID(id: string): Observable<Globals.User>{
+    public getUserDatabaseRecordByID(id: string, email: string): Observable<Globals.User>{
         return docData(doc(this.firestore, 'users/' + id)).pipe(
           first(), 
           map(doc => {
-            const user = new Globals.User(doc.email, doc.id, doc.role);
+            const user = new Globals.User(email, id, doc.role);
             return user;
           })
         )
@@ -77,7 +81,7 @@ export class AuthService{
         return from (sendPasswordResetEmail(this.auth, email))
     }
 
-    public async signIn(email: string, password: string): Promise<any>{
+    public async signIn(email: string, password: string): Promise<UserCredential>{
         return signInWithEmailAndPassword(this.auth, email, password)
     }
 

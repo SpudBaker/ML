@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { from, Observable, of } from 'rxjs';
-import { User } from '@angular/fire/auth';
+import { User, UserCredential } from '@angular/fire/auth';
 import { AuthService } from '../services/auth';
-import { catchError, first, map } from 'rxjs/operators';
+import { catchError, first, map, switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -12,7 +12,6 @@ import { catchError, first, map } from 'rxjs/operators';
 })
 export class LoginPage {
 
-  public login$: Observable<User>;
   public loginErrMessage: string;
   public inputEmail: string;
   public inputPassword: string;
