@@ -19,13 +19,13 @@ export class LoginPage {
 
   constructor(private authService: AuthService) {}
 
-  public resetPassword(){
+  public sendPasswordRestEmail(){
     this.loginErrMessage = null;
     if (!this.inputEmail){
       this.loginErrMessage = 'Enter an email to reset your password';
       return;
     }
-    this.authService.resetPassword(this.inputEmail)
+    this.authService.sendPasswordRestEmail(this.inputEmail)
     .pipe(
       first(),
       map(() => this.loginErrMessage = 'Check your inbox for an email with a password reset link'),
@@ -33,8 +33,10 @@ export class LoginPage {
         switch (err.code){
           case ('auth/invalid-email'):
             this.loginErrMessage = 'Enter the correct email format';
+            break;
           case ('auth/user-not-found'):
             this.loginErrMessage = 'Email not recognised';
+            break;
           default:
             this.loginErrMessage = err.code;
         };

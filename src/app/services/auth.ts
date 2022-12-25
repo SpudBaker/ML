@@ -73,7 +73,7 @@ export class AuthService{
         return this.user.id;
     }
 
-    public resetPassword(email: string): Observable<void>{
+    public sendPasswordRestEmail(email: string): Observable<void>{
         return from (sendPasswordResetEmail(this.auth, email))
     }
 
