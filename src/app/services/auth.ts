@@ -40,7 +40,7 @@ export class AuthService{
             switchMap(data => {
                 if(data){
                     if(!this.loggedIn){
-                        return this.getUserDatabaseRecordByID(data.uid, data.email).pipe(
+                        return this.getUserDatabaseRecordByID(data.displayName, data.uid, data.email).pipe(
                             switchMap(user => {
                                 console.log('auth service - logged in user', user);
                                 this.user = user;
@@ -59,11 +59,11 @@ export class AuthService{
         );
     }
 
-    public getUserDatabaseRecordByID(id: string, email: string): Observable<Globals.User>{
+    public getUserDatabaseRecordByID(displayName: string, id: string, email: string): Observable<Globals.User>{
         return docData(doc(this.firestore, 'users/' + id)).pipe(
           first(), 
           map(doc => {
-            const user = new Globals.User(email, id, doc.role);
+            const user = new Globals.User(displayName, email, id, doc.role);
             return user;
           })
         )
