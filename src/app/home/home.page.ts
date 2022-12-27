@@ -10,10 +10,8 @@ import { Observable } from 'rxjs';
 })
 
 export class HomePage {
-  public login$: Observable<User>;
 
-  constructor(private authService: AuthService) {
-    // this.login$ = this.authService.getLoginStatus();
+  constructor(private auth: AuthService) {
   }
 
 }

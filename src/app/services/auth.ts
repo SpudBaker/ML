@@ -42,7 +42,6 @@ export class AuthService{
                     if(!this.loggedIn){
                         return this.getUserDatabaseRecordByID(data.displayName, data.uid, data.email).pipe(
                             switchMap(user => {
-                                console.log('auth service - logged in user', user);
                                 this.user = user;
                                 this.loggedIn = true;
                                 return this.router.navigate(['home']);
@@ -67,6 +66,10 @@ export class AuthService{
             return user;
           })
         )
+    }
+
+    public getUserDisplayName(): string{
+        return this.user.displayName;
     }
 
     public getUserEmail(): string {
