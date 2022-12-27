@@ -3,7 +3,7 @@ import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendP
     signOut, user, User, UserCredential } from '@angular/fire/auth';
 import { collection, doc, docData, Firestore, getDocs, query, setDoc, where } from '@angular/fire/firestore';
 
-import { EMPTY, from, Observable, of } from 'rxjs';
+import { EMPTY, from, Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import * as Globals from'../../globals';
@@ -14,6 +14,7 @@ export class AuthService{
 
     private loggedIn: boolean;
     private user: Globals.User;
+    private userStatusVerfied: boolean; 
 
     constructor(private auth: Auth, private firestore: Firestore, private router: Router){
         this.getLoginStatus().subscribe();
@@ -44,6 +45,7 @@ export class AuthService{
                             switchMap(user => {
                                 this.user = user;
                                 this.loggedIn = true;
+                                this.userStatusVerfied = true;
                                 return this.router.navigate(['home']);
                             })
                         )
@@ -51,6 +53,7 @@ export class AuthService{
                 } else {
                     this.user = undefined;
                     this.loggedIn = false;
+                    this.userStatusVerfied = true;
                     this.router.navigate(['login']);
                     return EMPTY;
                 }
@@ -78,6 +81,10 @@ export class AuthService{
 
     public getUserId(): string {
         return this.user.id;
+    }
+
+    public getUserStatusVerified(): boolean {
+        return this.userStatusVerfied;
     }
 
     public sendPasswordRestEmail(email: string): Observable<void>{

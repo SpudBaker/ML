@@ -1,11 +1,11 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Welcome to M's Slave Portal</ion-title>
+    <ion-title><div *ngIf="authService.getUserStatusVerified()">Welcome to M's Slave Portal</div></ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class='outerDiv'>
+  <div class='outerDiv' *ngIf="authService.getUserStatusVerified()">
     <ion-grid>
       <ion-row>
         <ion-col size="6">
