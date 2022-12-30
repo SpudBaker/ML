@@ -16,7 +16,7 @@ export class LoginPage {
   public inputPassword: string;
   public signingIn: boolean;
 
-  constructor(private authService: AuthService) {}
+  constructor(public authService: AuthService) {}
 
   ionViewDidEnter(){
     this.signingIn = false;
