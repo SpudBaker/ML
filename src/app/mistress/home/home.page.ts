@@ -37,7 +37,7 @@ export class MistressHomePage implements OnInit {
     })
   }
 
-  public navlave(){
+  public navSlave(){
     
   }
 
