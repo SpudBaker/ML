@@ -26,6 +26,7 @@ export class MistressService{
 
     public getSlaves(): Observable<any>{
         const mistressId = this.authService.getUserId();
+        console.log('mistress service - getSlaves()', mistressId)
         const collectionRef = collection(this.firestore,'users');
         const queryRef = query(collectionRef, where('mistress', '==', mistressId));
         return collectionData(queryRef, {idField: 'docID'});
