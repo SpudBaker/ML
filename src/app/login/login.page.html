@@ -38,7 +38,7 @@
               <ion-row>
                 <ion-col size="3"></ion-col>
                 <ion-col size="6">
-                  <ion-button (click)="signIn()" expand="block" color="primary">Sign In</ion-button>
+                  <ion-button [disabled]="signingIn" (click)="signIn()" expand="block" color="primary">Sign In</ion-button>
                 </ion-col>
                 <ion-col size="3"></ion-col>
               </ion-row>
@@ -52,7 +52,7 @@
               <ion-row>
                 <ion-col size="3"></ion-col>
                 <ion-col size="6">
-                  <ion-button (click)="sendPasswordRestEmail()" expand="block" color="primary">Forgot Password</ion-button>
+                  <ion-button [disabled]="signingIn" (click)="sendPasswordRestEmail()" expand="block" color="primary">Forgot Password</ion-button>
                 </ion-col>
                 <ion-col size="3"></ion-col>
               </ion-row>

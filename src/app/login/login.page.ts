@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { from, Observable, of } from 'rxjs';
-import { User, UserCredential } from '@angular/fire/auth';
+import { from, of } from 'rxjs';
 import { AuthService } from '../services/auth';
-import { catchError, first, map, switchMap } from 'rxjs/operators';
+import { catchError, first, map} from 'rxjs/operators';
 
 
 @Component({
@@ -15,8 +14,13 @@ export class LoginPage {
   public loginErrMessage: string;
   public inputEmail: string;
   public inputPassword: string;
+  public signingIn: boolean;
 
   constructor(private authService: AuthService) {}
+
+  ionViewDidEnter(){
+    this.signingIn = false;
+  }
 
   public sendPasswordRestEmail(){
     this.loginErrMessage = null;
@@ -45,6 +49,7 @@ export class LoginPage {
   }
 
   public signIn(){
+    this.signingIn = true;
     this.loginErrMessage = null;
     if ((!this.inputEmail) || (!this.inputPassword)){
       this.loginErrMessage = 'Enter both email and password';
@@ -54,6 +59,7 @@ export class LoginPage {
     .pipe(
       first(),
       catchError(err => {
+        this.signingIn = false;
         switch (err.code){
           case ('auth/invalid-email'):
             this.loginErrMessage = 'Enter the correct email format';

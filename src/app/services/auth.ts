@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, 
-    signOut, user, User, UserCredential } from '@angular/fire/auth';
-import { collection, doc, docData, Firestore, getDocs, query, setDoc, where } from '@angular/fire/firestore';
+import { Auth, signInWithEmailAndPassword, sendPasswordResetEmail, 
+    signOut, user, UserCredential } from '@angular/fire/auth';
+import { doc, docData, Firestore } from '@angular/fire/firestore';
 
-import { EMPTY, from, Observable } from 'rxjs';
+import { BehaviorSubject, EMPTY, from, Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import * as Globals from'../../globals';
@@ -14,22 +14,10 @@ export class AuthService{
 
     private loggedIn: boolean;
     private user: Globals.User;
-    private userStatusVerfied: boolean; 
+    private userStatusVerfied = new BehaviorSubject<boolean>(false); 
 
     constructor(private auth: Auth, private firestore: Firestore, private router: Router){
         this.getLoginStatus().subscribe();
-    }
-
-    public createUserWithEmailAndPassword(email: string, password: string): Promise<any>{
-        return createUserWithEmailAndPassword(this.auth, email, password).then(async user => {
-            const q = query(collection(this.firestore, "users"), where("email", "==", email));
-            const querySnapshot = await getDocs(q);
-            if(querySnapshot.empty){
-                const usersCollection = collection(this.firestore, "users");
-                setDoc(doc(usersCollection, user.user.uid), {email, score: 100});
-            } else {
-            }
-        })
     }
 
     public getAuth(): Auth {
@@ -45,7 +33,7 @@ export class AuthService{
                             switchMap(user => {
                                 this.user = user;
                                 this.loggedIn = true;
-                                this.userStatusVerfied = true;
+                                this.userStatusVerfied.next(true);
                                 return this.router.navigate(['home']);
                             })
                         )
@@ -53,7 +41,7 @@ export class AuthService{
                 } else {
                     this.user = undefined;
                     this.loggedIn = false;
-                    this.userStatusVerfied = true;
+                    this.userStatusVerfied.next(true);
                     this.router.navigate(['login']);
                     return EMPTY;
                 }
@@ -72,18 +60,18 @@ export class AuthService{
     }
 
     public getUserDisplayName(): string{
-        return this.user.displayName;
+        return this.user?.displayName;
     }
 
     public getUserEmail(): string {
-        return this.user.email;
+        return this.user?.email;
     }
 
     public getUserId(): string {
-        return this.user.id;
+        return this.user?.id;
     }
 
-    public getUserStatusVerified(): boolean {
+    public getUserStatusVerified(): BehaviorSubject<boolean> {
         return this.userStatusVerfied;
     }
 
