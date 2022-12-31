@@ -24,7 +24,7 @@ export class AuthService{
         return this.auth;
     }
 
-    public getLoginStatus(): Observable<any>{
+    public getLoginStatus(): Observable<boolean>{
         return user(this.auth).pipe(
             switchMap(data => {
                 if(data){
@@ -34,7 +34,11 @@ export class AuthService{
                                 this.user = user;
                                 this.loggedIn = true;
                                 this.userStatusVerfied.next(true);
-                                return this.router.navigate(['home']);
+                                if(user.role == Globals.Role.Mistress){
+                                    return this.router.navigate(['mistress']);
+                                } else {
+                                    return this.router.navigate(['slave']);
+                                }
                             })
                         )
                     };
