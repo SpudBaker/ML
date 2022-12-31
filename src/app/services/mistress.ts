@@ -17,7 +17,7 @@ export class MistressService{
         const docRef = doc(this.firestore, "users", slaveId) as DocumentReference;
         return docSnapshots(docRef).pipe(
             map(snap => {
-                const s = new Globals.Slave(snap.data().displayName, snap.data().email, snap.id, snap.data().mistress, snap.data().role)
+                const s = new Globals.Slave(snap.data().displayName, snap.data().email, snap.id, snap.data().mistress, snap.data().role, snap.data().lastSeen)
                 console.log('mistress service - get slave snapshots', s);
                 return s;
             })

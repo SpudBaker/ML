@@ -18,6 +18,18 @@ export class MistressHomePage implements OnInit {
 
   constructor(public auth: AuthService, private mistressService: MistressService) {}
 
+  getButtonColor(slave: Globals.Slave): string{
+    return (slave?.lastSeenRecent) ? 'success' : 'medium';
+  }
+
+  getLastSeenDisplayTime(slave: Globals.Slave): string {
+    if(slave.lastSeen == null){
+      return 'never logged in'} 
+    else {
+      return (slave?.lastSeenRecent) ? '' : new Date(slave.lastSeen.seconds*1000).toLocaleString();
+    }
+  }
+
   ngOnInit(): void {
     this.slaveSubs = new Array<Observable<Globals.Slave>>();
     this.auth.getUserStatusVerified().pipe(
@@ -37,9 +49,7 @@ export class MistressHomePage implements OnInit {
     })
   }
 
-  public navSlave(){
-    
-  }
+  public navSlave(){}
 
 }
 
