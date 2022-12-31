@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Auth, signInWithEmailAndPassword, sendPasswordResetEmail, 
     signOut, user, UserCredential } from '@angular/fire/auth';
-import { doc, docData, Firestore } from '@angular/fire/firestore';
+import { doc, docData, Firestore, Timestamp, updateDoc } from '@angular/fire/firestore';
 
-import { BehaviorSubject, EMPTY, from, Observable } from 'rxjs';
-import { first, map, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, defer, EMPTY, from, Observable, Subscription } from 'rxjs';
+import { delay, first, map, repeatWhen, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import * as Globals from'../../globals';
 
@@ -13,6 +13,8 @@ import * as Globals from'../../globals';
 export class AuthService{
 
     private loggedIn: boolean;
+    private updateTimer$: Observable<any>;
+    private updateTimerSubscription: Subscription;
     private user: Globals.User;
     private userStatusVerfied = new BehaviorSubject<boolean>(false); 
 
@@ -34,6 +36,7 @@ export class AuthService{
                                 this.user = user;
                                 this.loggedIn = true;
                                 this.userStatusVerfied.next(true);
+                                this.startUpdateTimer();
                                 if(user.role == Globals.Role.Mistress){
                                     return this.router.navigate(['mistress']);
                                 } else {
@@ -89,6 +92,20 @@ export class AuthService{
 
     public signOut(){
         signOut(this.auth);
+    }
+
+    private startUpdateTimer(): void{
+        this.updateTimer$ = defer(() => this.updateTimeStamp())
+            .pipe(
+                repeatWhen(notifications => notifications.pipe(delay(60000)))
+            );
+        this.updateTimerSubscription = this.updateTimer$.subscribe();
+    }
+
+    private updateTimeStamp(): Promise<any>{
+        console.log('auth service - about to update lastSeen');
+        const docRef = doc(this.firestore,'users/'+this.getUserId());
+        return updateDoc(docRef, {lastSeen: Timestamp.fromDate(new Date())})
     }
 
 }
