@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth';
 import { MistressService } from '../../services/mistress';
-import { Observable } from 'rxjs';
-import { filter, first, map, switchMap } from 'rxjs/operators';
+import { DocumentData } from '@angular/fire/firestore';
+import { defer, Observable, Subscription } from 'rxjs';
+import { delay, filter, first, map, repeatWhen, switchMap } from 'rxjs/operators';
 import * as Globals from '../../../globals';
 
 
@@ -12,9 +13,11 @@ import * as Globals from '../../../globals';
   styleUrls: ['home.page.scss'],
 })
 
-export class MistressHomePage implements OnInit {
+export class MistressHomePage {
 
-  public slaveSubs: Array<Observable<Globals.Slave>>
+  private refreshTimer$: Observable<any>;
+  private refreshTimerSubscription: Subscription;
+  public slaveSubs = new Array<Observable<Globals.Slave>>();
 
   constructor(public auth: AuthService, private mistressService: MistressService) {}
 
@@ -30,26 +33,45 @@ export class MistressHomePage implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    this.slaveSubs = new Array<Observable<Globals.Slave>>();
+  private getSlavesAndDocSnapshots(): Observable<DocumentData[]>{
+    return this.mistressService.getSlaves().pipe(
+      map(data => {
+        console.log('mistress home page - data', data);
+        this.slaveSubs = new Array<Observable<Globals.Slave>>();
+        data.forEach(slave => {
+          console.log('mistress homepage', slave);
+          this.slaveSubs.push(this.mistressService.getSlaveSnapshots(slave.docID))
+        });
+        return data;
+      })
+    )
+  }
+
+  public ionViewDidEnter(): void {
     this.auth.getUserStatusVerified().pipe(
       filter(userVerified => userVerified == true),
       map(() => this.auth.getUserId()),
       filter(id => id != null),
-      switchMap(()=> {
-        return this.mistressService.getSlaves();
-      }),
-      first()
-    ).subscribe(data => {
-      console.log('mistress home page - data', data);
-      data.forEach(slave => {
-        console.log('mistress homepage', slave);
-        this.slaveSubs.push(this.mistressService.getSlaveSnapshots(slave.docID))
-      });
-    })
+    ).subscribe(() => {
+      this.startRefreshTimer();
+    }
+    );
+  }
+
+  public ionViewDidLeave(): void {
+    if(!this.refreshTimerSubscription.closed){this.refreshTimerSubscription.unsubscribe()}
   }
 
   public navSlave(){}
+
+  private startRefreshTimer(): void{
+    this.refreshTimer$ = defer(() => this.getSlavesAndDocSnapshots())
+        .pipe(
+          first(),
+          repeatWhen(notifications => notifications.pipe(delay(600000)))
+        );
+    this.refreshTimerSubscription = this.refreshTimer$.subscribe();
+}
 
 }
 

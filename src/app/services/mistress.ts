@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { collection, collectionData, doc, docSnapshots, DocumentReference, Firestore, getDoc, query, where } from '@angular/fire/firestore';
+import { collection, collectionData, doc, docSnapshots, DocumentData, DocumentReference, Firestore, query, where } from '@angular/fire/firestore';
 import { EMPTY, from, Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -24,7 +24,7 @@ export class MistressService{
         )
     }
 
-    public getSlaves(): Observable<any>{
+    public getSlaves(): Observable<DocumentData[]>{
         const mistressId = this.authService.getUserId();
         console.log('mistress service - getSlaves()', mistressId)
         const collectionRef = collection(this.firestore,'users');
