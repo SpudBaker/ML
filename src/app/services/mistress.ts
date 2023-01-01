@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { collection, collectionData, doc, docSnapshots, DocumentData, DocumentReference, Firestore, query, where } from '@angular/fire/firestore';
-import { EMPTY, from, Observable } from 'rxjs';
+import { BehaviorSubject, EMPTY, from, Observable, timer } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from './auth';
@@ -18,8 +18,15 @@ export class MistressService{
         return docSnapshots(docRef).pipe(
             map(snap => {
                 const s = new Globals.Slave(snap.data().displayName, snap.data().email, snap.id, snap.data().mistress, snap.data().role, snap.data().lastSeen)
-                console.log('mistress service - get slave snapshots', s);
                 return s;
+            }),
+            switchMap(slave => {
+                return timer(0,10000).pipe(
+                    map(() => {
+                        console.log('mistress service - gt snapshots - timer map');
+                        return Globals.cloneSlave(slave);
+                    })
+                )
             })
         )
     }

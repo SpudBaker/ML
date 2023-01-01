@@ -15,8 +15,7 @@ import * as Globals from '../../../globals';
 
 export class MistressHomePage {
 
-  private refreshTimer$: Observable<any>;
-  private refreshTimerSubscription: Subscription;
+  private authUserVerifiedSubscription: Subscription;
   public slaveSubs = new Array<Observable<Globals.Slave>>();
 
   constructor(public auth: AuthService, private mistressService: MistressService) {}
@@ -35,8 +34,8 @@ export class MistressHomePage {
 
   private getSlavesAndDocSnapshots(): Observable<DocumentData[]>{
     return this.mistressService.getSlaves().pipe(
+      first(),
       map(data => {
-        console.log('mistress home page - data', data);
         this.slaveSubs = new Array<Observable<Globals.Slave>>();
         data.forEach(slave => {
           console.log('mistress homepage', slave);
@@ -48,30 +47,19 @@ export class MistressHomePage {
   }
 
   public ionViewDidEnter(): void {
-    this.auth.getUserStatusVerified().pipe(
+    this.authUserVerifiedSubscription = this.auth.getUserStatusVerified().pipe(
       filter(userVerified => userVerified == true),
       map(() => this.auth.getUserId()),
       filter(id => id != null),
-    ).subscribe(() => {
-      this.startRefreshTimer();
-    }
-    );
+      switchMap(() => this.getSlavesAndDocSnapshots())
+    ).subscribe();
   }
 
   public ionViewDidLeave(): void {
-    if(!this.refreshTimerSubscription.closed){this.refreshTimerSubscription.unsubscribe()}
+    if(!this.authUserVerifiedSubscription.closed){this.authUserVerifiedSubscription.unsubscribe()}
   }
 
   public navSlave(){}
-
-  private startRefreshTimer(): void{
-    this.refreshTimer$ = defer(() => this.getSlavesAndDocSnapshots())
-        .pipe(
-          first(),
-          repeatWhen(notifications => notifications.pipe(delay(600000)))
-        );
-    this.refreshTimerSubscription = this.refreshTimer$.subscribe();
-}
 
 }
 

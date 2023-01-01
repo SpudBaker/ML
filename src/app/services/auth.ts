@@ -3,8 +3,8 @@ import { Auth, signInWithEmailAndPassword, sendPasswordResetEmail,
     signOut, user, UserCredential } from '@angular/fire/auth';
 import { doc, docData, Firestore, Timestamp, updateDoc } from '@angular/fire/firestore';
 
-import { BehaviorSubject, defer, EMPTY, from, Observable, Subscription } from 'rxjs';
-import { delay, first, map, repeatWhen, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, EMPTY, from, Observable, Subscription, timer } from 'rxjs';
+import { first, map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import * as Globals from'../../globals';
 
@@ -94,11 +94,10 @@ export class AuthService{
         signOut(this.auth);
     }
 
-    private startUpdateTimer(): void{
-        this.updateTimer$ = defer(() => this.updateTimeStamp())
-            .pipe(
-                repeatWhen(notifications => notifications.pipe(delay(60000)))
-            );
+    private startUpdateTimer():void {
+        this.updateTimer$ = timer(0, 60000).pipe(
+            switchMap(() => this.updateTimeStamp())
+        );
         this.updateTimerSubscription = this.updateTimer$.subscribe();
     }
 
