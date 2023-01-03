@@ -4,6 +4,7 @@ import { MistressService } from '../../services/mistress';
 import { DocumentData } from '@angular/fire/firestore';
 import { defer, Observable, Subscription } from 'rxjs';
 import { delay, filter, first, map, repeatWhen, switchMap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import * as Globals from '../../../globals';
 
 
@@ -18,7 +19,7 @@ export class MistressHomePage {
   private authUserVerifiedSubscription: Subscription;
   public slaveSubs = new Array<Observable<Globals.Slave>>();
 
-  constructor(public auth: AuthService, private mistressService: MistressService) {}
+  constructor(public auth: AuthService, private mistressService: MistressService, private router: Router) {}
 
   getButtonColor(slave: Globals.Slave): string{
     return (slave?.lastSeenRecent) ? 'success' : 'medium';
@@ -60,6 +61,10 @@ export class MistressHomePage {
   }
 
   public navSlave(){}
+
+  public navGames(){
+    return this.router.navigate(['game']);
+  }
 
 }
 

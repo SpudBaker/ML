@@ -3,6 +3,10 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
+    path: 'game',
+    loadChildren: () => import('./game/game.module').then( m => m.GameModule)
+  },
+  {
     path: 'login',
     loadChildren: () => import('./login/login.module').then( m => m.LoginModule)
   },
