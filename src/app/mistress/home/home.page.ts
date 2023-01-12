@@ -62,8 +62,12 @@ export class MistressHomePage {
 
   public navSlave(){}
 
-  public navGames(){
-    return this.router.navigate(['game']);
+  public navDice(){
+    return this.router.navigate(['game/dice']);
+  }
+
+  public navDiceTemplate(){
+    return this.router.navigate(['game/dice-template']);
   }
 
 }

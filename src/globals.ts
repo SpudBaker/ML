@@ -5,6 +5,38 @@ export enum Role {
   Slave = 'Slave'
 }
 
+export class DiceGameTemplate {
+  docID: string;
+  mistress: string;
+  name: string;
+  task2: string;
+  task3: string;
+  task4: string;
+  task5: string;
+  task6: string;
+  task7: string;
+  task8: string;
+  task9: string;
+  task10: string;
+  task11: string;
+  task12: string;
+  constructor(docID: string, mistress: string, name: string, task2: string, task3: string, task4: string, task5: string, task6: string, task7: string, task8: string, task9: string, task10: string, task11: string, task12: string){
+    this.docID = docID;
+    this.mistress = mistress;
+    this.name = name;
+    this.task2 = task2;
+    this.task3= task3;
+    this.task4 = task4;
+    this.task5 = task5;
+    this.task6 = task6;
+    this.task7 = task7;
+    this.task8 = task8;
+    this.task9 = task9;
+    this.task10 = task10;
+    this.task11 = task11;
+    this.task12 = task12;
+  }
+}
 
 export class User {
   displayName: string;

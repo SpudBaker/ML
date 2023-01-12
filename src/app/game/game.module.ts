@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { FormsModule } from '@angular/forms';
-import { DicePage } from './dice/dice.page';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DicePage } from './dice/game/dice.page';
+import { DiceTemplatePage } from './dice/template/template.page';
+import { EditTemplateComponent } from './dice/modals/editTemplate/editTemplate.component';
 import { GameRoutingModule } from './game-routing.module';
 
 
@@ -11,9 +12,10 @@ import { GameRoutingModule } from './game-routing.module';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     IonicModule,
     GameRoutingModule
   ],
-  declarations: [DicePage]
+  declarations: [DicePage, DiceTemplatePage, EditTemplateComponent]
 })
 export class GameModule {}
