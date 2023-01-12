@@ -42,6 +42,11 @@ export class EditTemplateComponent {
     this.modalController.dismiss();
   }
 
+  public delete(){
+    this.gamesService.deleteGameTemplate(this.diceTemplate.docID)
+    .then(() => {this.modalController.dismiss()})
+  }
+
   public save(){
     const gt: Globals.DiceGameTemplate = {...this.form.value}
     gt.docID = this.diceTemplate.docID
