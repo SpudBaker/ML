@@ -5,6 +5,7 @@ import * as Globals from '../../../../globals';
 import { map } from 'rxjs/operators';
 import { ModalController } from '@ionic/angular';
 import { EditTemplateComponent } from '../modals/editTemplate/editTemplate.component';
+import { NewTemplateComponent } from '../modals/newTemplate/newTemplate.component';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -28,7 +29,7 @@ export class DiceTemplatePage {
     if(this.colDataSub && (!this.colDataSub.closed)) { this.colDataSub.unsubscribe()}
   }
 
-  getData(){
+  public getData(){
     this.colDataSub = this.gamesService.getGameTemplates().pipe(
       map(colData => {
         this.games = new Array<Globals.DiceGameTemplate>();
@@ -43,6 +44,15 @@ export class DiceTemplatePage {
     const modal = await this.modalController.create({ 
       component: EditTemplateComponent,
       componentProps: {diceTemplate},
+      backdropDismiss: false
+      }
+    );
+    modal.present();
+  }
+
+  public async newGame(){
+    const modal = await this.modalController.create({ 
+      component: NewTemplateComponent,
       backdropDismiss: false
       }
     );

@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DicePage } from './dice/game/dice.page';
 import { DiceTemplatePage } from './dice/template/template.page';
 import { EditTemplateComponent } from './dice/modals/editTemplate/editTemplate.component';
+import { NewTemplateComponent } from './dice/modals/newTemplate/newTemplate.component';
 import { GameRoutingModule } from './game-routing.module';
 
 
@@ -16,6 +17,6 @@ import { GameRoutingModule } from './game-routing.module';
     IonicModule,
     GameRoutingModule
   ],
-  declarations: [DicePage, DiceTemplatePage, EditTemplateComponent]
+  declarations: [DicePage, DiceTemplatePage, EditTemplateComponent, NewTemplateComponent]
 })
 export class GameModule {}
