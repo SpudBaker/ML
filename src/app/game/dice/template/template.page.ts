@@ -7,6 +7,8 @@ import { ModalController } from '@ionic/angular';
 import { EditTemplateComponent } from '../modals/editTemplate/editTemplate.component';
 import { NewTemplateComponent } from '../modals/newTemplate/newTemplate.component';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs/internal/Observable';
 
 @Component({
   selector: 'app-dice-template',
@@ -18,26 +20,31 @@ export class DiceTemplatePage {
 
   public games: Globals.DiceGameTemplate[]
   private colDataSub: Subscription;
+  private loading = false;
 
-  constructor(public authService: AuthService, private gamesService: GamesService, private modalController: ModalController){}
+  constructor(public authService: AuthService, private gamesService: GamesService, 
+    private modalController: ModalController, private router: Router){}
 
   public ionViewDidEnter(): void {
-    this.getData();
+    this.loading = true;
+    this.colDataSub = this.getData().pipe(
+      map(() => this.loading = false)
+    ).subscribe();
   }
 
   public ionViewDidLeave(){
     if(this.colDataSub && (!this.colDataSub.closed)) { this.colDataSub.unsubscribe()}
   }
 
-  public getData(){
-    this.colDataSub = this.gamesService.getGameTemplates().pipe(
+  public getData(): Observable<void>{
+     return this.gamesService.getGameTemplates().pipe(
       map(colData => {
         this.games = new Array<Globals.DiceGameTemplate>();
         colData.forEach(t => { 
           this.games.push(t as Globals.DiceGameTemplate)
         });
       })
-    ).subscribe();
+    );
   }
 
   public async editGame(diceTemplate: Globals.DiceGameTemplate){
@@ -48,6 +55,10 @@ export class DiceTemplatePage {
       }
     );
     modal.present();
+  }
+
+  public navHome(): void {
+    this.router.navigate(['mistress']);
   }
 
   public async newGame(){
