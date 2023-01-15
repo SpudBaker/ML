@@ -12,31 +12,24 @@ export class MistressService{
 
     constructor(private authService: AuthService, private firestore: Firestore,){}
 
-    public getSlaveSnapshots(slaveId: string):Observable<Globals.Slave>{
-        console.log('mistress service - get slave snapshots', slaveId);
-        const docRef = doc(this.firestore, "users", slaveId) as DocumentReference;
-        return docSnapshots(docRef).pipe(
-            map(snap => {
-                const s = new Globals.Slave(snap.data().displayName, snap.data().email, snap.id, snap.data().mistress, snap.data().role, snap.data().lastSeen)
-                return s;
-            }),
-            switchMap(slave => {
+    public getSlaves(): Observable<Globals.Slave[]>{
+        const mistressId = this.authService.getUserId();
+        const collectionRef = collection(this.firestore,'users');
+        const queryRef = query(collectionRef, where('mistress', '==', mistressId));
+        return collectionData(queryRef, {idField: 'docID'}).pipe(
+            switchMap(itemsArr => {
                 return timer(0,10000).pipe(
                     map(() => {
-                        console.log('mistress service - gt snapshots - timer map');
-                        return Globals.cloneSlave(slave);
+                        console.log('mistress service - getSlaves()', itemsArr)
+                        const slaveArray = new Array<Globals.Slave>;
+                        itemsArr.forEach(item => {
+                            slaveArray.push(item as Globals.Slave);
+                        })
+                        return slaveArray;
                     })
                 )
             })
-        )
-    }
-
-    public getSlaves(): Observable<DocumentData[]>{
-        const mistressId = this.authService.getUserId();
-        console.log('mistress service - getSlaves()', mistressId)
-        const collectionRef = collection(this.firestore,'users');
-        const queryRef = query(collectionRef, where('mistress', '==', mistressId));
-        return collectionData(queryRef, {idField: 'docID'});
+        );
     }
 
 }

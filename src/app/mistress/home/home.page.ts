@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth';
 import { MistressService } from '../../services/mistress';
 import { MessagesService } from '../../services/messages';
-import { DocumentData } from '@angular/fire/firestore';
 import { Observable, Subscription } from 'rxjs';
 import { filter, first, map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -19,12 +18,13 @@ export class MistressHomePage {
 
   private authUserVerifiedSubscription: Subscription;
   public loading = false;
-  public slaveSubs = new Array<Observable<Globals.Slave>>();
+  public slaves = new Array<Globals.Slave>();
   public messages = new Array<Globals.Message>();
 
   constructor(public auth: AuthService, private messagesService: MessagesService, private mistressService: MistressService, private router: Router) {}
 
   getButtonColor(slave: Globals.Slave): string{
+    
     return (slave?.lastSeenRecent) ? 'success' : 'medium';
   }
 
@@ -49,15 +49,15 @@ export class MistressHomePage {
     )
   }
 
-  private getSlavesAndDocSnapshots(): Observable<DocumentData[]>{
+  private getSlaves(): Observable<void>{
     return this.mistressService.getSlaves().pipe(
-      first(),
-      map(data => {
-        this.slaveSubs = new Array<Observable<Globals.Slave>>();
-        data.forEach(slave => {
-          this.slaveSubs.push(this.mistressService.getSlaveSnapshots(slave.docID))
-        });
-        return data;
+      map(dataArr => {
+        const slaveArr = new Array<Globals.Slave>();
+        dataArr.forEach(item => {
+          // update lastSeenRecent
+          slaveArr.push(Globals.cloneSlave(item));
+        })
+        this.slaves = slaveArr;
       })
     )
   }
@@ -68,7 +68,7 @@ export class MistressHomePage {
       filter(userVerified => userVerified == true),
       map(() => this.auth.getUserId()),
       filter(id => id != null),
-      switchMap(() => this.getSlavesAndDocSnapshots()),
+      switchMap(() => this.getSlaves()),
       switchMap(() => this.getMessages()),
       map(()=> this.loading = false)
     ).subscribe();
@@ -76,7 +76,6 @@ export class MistressHomePage {
 
   public ionViewDidLeave(): void {
     if(!this.authUserVerifiedSubscription.closed){this.authUserVerifiedSubscription.unsubscribe()}
-    this.slaveSubs = new Array<Observable<Globals.Slave>>();
   }
 
   public navSlave(){}
