@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../services/auth';
 import { MistressService } from '../../services/mistress';
+import { MessagesService } from '../../services/messages';
 import { DocumentData } from '@angular/fire/firestore';
 import { Observable, Subscription } from 'rxjs';
 import { filter, first, map, switchMap } from 'rxjs/operators';
@@ -19,8 +20,9 @@ export class MistressHomePage {
   private authUserVerifiedSubscription: Subscription;
   public loading = false;
   public slaveSubs = new Array<Observable<Globals.Slave>>();
+  public messages = new Array<Globals.Message>();
 
-  constructor(public auth: AuthService, private mistressService: MistressService, private router: Router) {}
+  constructor(public auth: AuthService, private messagesService: MessagesService, private mistressService: MistressService, private router: Router) {}
 
   getButtonColor(slave: Globals.Slave): string{
     return (slave?.lastSeenRecent) ? 'success' : 'medium';
@@ -32,6 +34,19 @@ export class MistressHomePage {
     else {
       return (slave?.lastSeenRecent) ? '' : new Date(slave.lastSeen.seconds*1000).toLocaleString();
     }
+  }
+
+  private getMessages():Observable<void>{
+    this.messages = new Array();
+    return this.messagesService.getMessages().pipe(
+      map(data => {
+        console.log('mistress home - message', data);
+        this.messages = new Array<Globals.Message>();
+        data.forEach(item => {
+          this.messages.push(item);
+        })
+      })
+    )
   }
 
   private getSlavesAndDocSnapshots(): Observable<DocumentData[]>{
@@ -54,6 +69,7 @@ export class MistressHomePage {
       map(() => this.auth.getUserId()),
       filter(id => id != null),
       switchMap(() => this.getSlavesAndDocSnapshots()),
+      switchMap(() => this.getMessages()),
       map(()=> this.loading = false)
     ).subscribe();
   }

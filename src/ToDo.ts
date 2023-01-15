@@ -1,4 +1,3 @@
 /*
--- create a card for each slave
--- mistress slave page
+-- refactor mistress homepage to use simple collection
 */

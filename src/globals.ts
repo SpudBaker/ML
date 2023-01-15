@@ -38,6 +38,16 @@ export class DiceGameTemplate {
   }
 }
 
+export class Message {
+  docID: string;
+  incoming: boolean;
+  mistress: string;
+  message: string;
+  read: boolean;
+  timeStamp: Timestamp;
+  slave: string;
+}
+
 export class User {
   displayName: string;
   email: string;
