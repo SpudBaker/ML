@@ -3,7 +3,7 @@ import { AuthService } from '../../services/auth';
 import { MistressService } from '../../services/mistress';
 import { MessagesService } from '../../services/messages';
 import { Observable, Subscription } from 'rxjs';
-import { filter, first, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import * as Globals from '../../../globals';
 
@@ -21,7 +21,8 @@ export class MistressHomePage {
   public slaves = new Array<Globals.Slave>();
   public messages = new Array<Globals.Message>();
 
-  constructor(public auth: AuthService, private messagesService: MessagesService, private mistressService: MistressService, private router: Router) {}
+  constructor(public auth: AuthService, private messagesService: MessagesService, private mistressService: MistressService, 
+    private router: Router) {}
 
   getButtonColor(slave: Globals.Slave): string{
     
@@ -52,12 +53,24 @@ export class MistressHomePage {
   private getSlaves(): Observable<void>{
     return this.mistressService.getSlaves().pipe(
       map(dataArr => {
-        const slaveArr = new Array<Globals.Slave>();
-        dataArr.forEach(item => {
-          // update lastSeenRecent
-          slaveArr.push(Globals.cloneSlave(item));
-        })
-        this.slaves = slaveArr;
+        if(this.slaves.length != dataArr.length){
+          this.slaves = dataArr;
+        }  else {
+          dataArr.forEach(item1 => {
+            let changed = false;
+            this.slaves.forEach(item2 => {
+              if((item1.id == item2.id) && (
+                (item1.lastSeenRecent != item2.lastSeenRecent) ||
+                (item1.displayName != item2.displayName) || 
+                (item1.email != item2.email) ||
+                (item1.mistress != item2.mistress) ||
+                (item1.role != item2.role))){
+                  changed = true;
+                }
+            })
+            if(changed){this.slaves = dataArr;}
+          })
+        }
       })
     )
   }
@@ -68,8 +81,8 @@ export class MistressHomePage {
       filter(userVerified => userVerified == true),
       map(() => this.auth.getUserId()),
       filter(id => id != null),
-      switchMap(() => this.getSlaves()),
       switchMap(() => this.getMessages()),
+      switchMap(() => this.getSlaves()),
       map(()=> this.loading = false)
     ).subscribe();
   }

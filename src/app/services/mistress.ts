@@ -23,6 +23,8 @@ export class MistressService{
                         console.log('mistress service - getSlaves()', itemsArr)
                         const slaveArray = new Array<Globals.Slave>;
                         itemsArr.forEach(item => {
+                            const s: Globals.Slave = item as Globals.Slave;
+                            s.lastSeenRecent = Globals.recent(s.lastSeen);
                             slaveArray.push(item as Globals.Slave);
                         })
                         return slaveArray;
