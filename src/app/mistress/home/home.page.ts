@@ -17,21 +17,22 @@ import * as Globals from '../../../globals';
 export class MistressHomePage {
 
   private authUserVerifiedSubscription: Subscription;
-  public loading = false;
+  public loading = true;
   public slaves = new Array<Globals.Slave>();
+  private slaveSubscription: Subscription;
   public messages = new Array<Globals.Message>();
+  private messageSubscription: Subscription;
 
   constructor(public auth: AuthService, private messagesService: MessagesService, private mistressService: MistressService, 
     private router: Router) {}
 
   getButtonColor(slave: Globals.Slave): string{
-    
     return (slave?.lastSeenRecent) ? 'success' : 'medium';
   }
 
   getSlaveLastSeenDisplayTime(slave: Globals.Slave): string {
     if(slave.lastSeen == null){
-      return 'never logged in'} 
+      return 'Never logged in'} 
     else {
       return (slave?.lastSeenRecent) ? 'Logged in and active' : new Date(slave.lastSeen.seconds*1000).toLocaleString();
     }
@@ -45,7 +46,6 @@ export class MistressHomePage {
     this.messages = new Array();
     return this.messagesService.getMessages().pipe(
       map(data => {
-        console.log('mistress home - message', data);
         this.messages = new Array<Globals.Message>();
         data.forEach(item => {
           this.messages.push(item);
@@ -90,8 +90,11 @@ export class MistressHomePage {
       filter(userVerified => userVerified == true),
       map(() => this.auth.getUserId()),
       filter(id => id != null),
-      switchMap(() => this.getMessages()),
-      switchMap(() => this.getSlaves()),
+      map(()=> {
+        console.log('ionViewDidEnter', this.auth.getUserId());
+        this.messageSubscription = this.getMessages().subscribe();
+        this.slaveSubscription = this.getSlaves().subscribe();
+      }),
       map(()=> this.loading = false)
     ).subscribe();
   }
@@ -100,7 +103,9 @@ export class MistressHomePage {
     this.slaves = new Array<Globals.Slave>();
     this.messages = new Array<Globals.Message>();
     this.loading = true;
-    if(!this.authUserVerifiedSubscription.closed){this.authUserVerifiedSubscription.unsubscribe()}
+    if(!this.authUserVerifiedSubscription.closed){this.authUserVerifiedSubscription.unsubscribe()};
+    if(!this.slaveSubscription.closed){this.slaveSubscription.unsubscribe()};
+    if(!this.messageSubscription.closed){this.messageSubscription.unsubscribe()};
   }
 
   public navSlave(){}

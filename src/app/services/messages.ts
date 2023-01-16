@@ -13,7 +13,7 @@ export class MessagesService{
 
     public getMessages(): Observable<Globals.Message[]>{
         const mistressId = this.authService.getUserId();
-        if(!mistressId){return EMPTY}
+        if(!mistressId){console.log('returning empty'); return EMPTY}
         const collectionRef = collection(this.firestore,'messages');
         const queryRef = query(collectionRef, where('mistress', '==', mistressId), where('read', '==', false), orderBy("timeStamp","desc"));
         return collectionData(queryRef, {idField: 'docID'}).pipe(
