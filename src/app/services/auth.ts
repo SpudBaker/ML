@@ -75,7 +75,7 @@ export class AuthService{
     }
 
     public getUserId(): string {
-        return this.user?.id;
+        return this.user?.docID;
     }
 
     public getUserStatusVerified(): BehaviorSubject<boolean> {

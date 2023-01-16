@@ -51,14 +51,14 @@ export class Message {
 export class User {
   displayName: string;
   email: string;
-  id: string;
+  docID: string;
   lastSeen: Timestamp; 
   lastSeenRecent: boolean;
   role: Role;
-  constructor(displayName: string, email: string, id: string, role: Role, lastSeen?: Timestamp){
+  constructor(displayName: string, email: string, docID: string, role: Role, lastSeen?: Timestamp){
     this.displayName = displayName;
     this.email = email;
-    this.id = id;
+    this.docID = docID;
     this.lastSeen = lastSeen;
     this.lastSeenRecent = recent(lastSeen);
     this.role = role;

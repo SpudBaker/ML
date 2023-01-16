@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { collection, collectionData, DocumentData, Firestore } from '@angular/fire/firestore';
+import { collection, collectionData, DocumentData, Firestore, orderBy, query, where } from '@angular/fire/firestore';
 import { EMPTY, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth';
@@ -15,8 +15,8 @@ export class MessagesService{
         const mistressId = this.authService.getUserId();
         if(!mistressId){return EMPTY}
         const collectionRef = collection(this.firestore,'messages');
-        // const queryRef = query(collectionRef, where('mistress', '==', mistressId), orderBy("name"));
-        return collectionData(collectionRef, {idField: 'docID'}).pipe(
+        const queryRef = query(collectionRef, where('mistress', '==', mistressId), where('read', '==', false), orderBy("timeStamp","desc"));
+        return collectionData(queryRef, {idField: 'docID'}).pipe(
             map(dataArr => {
                 const arrMessages = new Array<Globals.Message>();
                 dataArr.forEach(item => {

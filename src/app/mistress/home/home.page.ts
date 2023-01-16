@@ -29,12 +29,16 @@ export class MistressHomePage {
     return (slave?.lastSeenRecent) ? 'success' : 'medium';
   }
 
-  getLastSeenDisplayTime(slave: Globals.Slave): string {
+  getSlaveLastSeenDisplayTime(slave: Globals.Slave): string {
     if(slave.lastSeen == null){
       return 'never logged in'} 
     else {
-      return (slave?.lastSeenRecent) ? '' : new Date(slave.lastSeen.seconds*1000).toLocaleString();
+      return (slave?.lastSeenRecent) ? 'Logged in and active' : new Date(slave.lastSeen.seconds*1000).toLocaleString();
     }
+  }
+
+  getMessageDisplayTime(message: Globals.Message): string {
+    return new Date(message.timeStamp.seconds*1000).toLocaleString();
   }
 
   private getMessages():Observable<void>{
@@ -50,6 +54,11 @@ export class MistressHomePage {
     )
   }
 
+  public getSlaveName(slaveID: string): string {
+    const s = this.slaves.find(item => item.docID == slaveID);
+    return s.displayName;
+  }
+
   private getSlaves(): Observable<void>{
     return this.mistressService.getSlaves().pipe(
       map(dataArr => {
@@ -59,7 +68,7 @@ export class MistressHomePage {
           dataArr.forEach(item1 => {
             let changed = false;
             this.slaves.forEach(item2 => {
-              if((item1.id == item2.id) && (
+              if((item1.docID == item2.docID) && (
                 (item1.lastSeenRecent != item2.lastSeenRecent) ||
                 (item1.displayName != item2.displayName) || 
                 (item1.email != item2.email) ||
@@ -88,6 +97,9 @@ export class MistressHomePage {
   }
 
   public ionViewDidLeave(): void {
+    this.slaves = new Array<Globals.Slave>();
+    this.messages = new Array<Globals.Message>();
+    this.loading = true;
     if(!this.authUserVerifiedSubscription.closed){this.authUserVerifiedSubscription.unsubscribe()}
   }
 
