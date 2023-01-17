@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ModalController } from '@ionic/angular';
 import { AuthService } from '../../services/auth';
 import { MistressService } from '../../services/mistress';
 import { MessagesService } from '../../services/messages';
@@ -6,6 +7,7 @@ import { Observable, Subscription } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import * as Globals from '../../../globals';
+import { NewSlaveComponent } from '../modals/newSlave/newSlave.component';
 
 
 @Component({
@@ -17,14 +19,19 @@ import * as Globals from '../../../globals';
 export class MistressHomePage {
 
   private authUserVerifiedSubscription: Subscription;
-  public loading = true;
+  public messagesLoading = true;
+  public slavesLoading = true;
   public slaves = new Array<Globals.Slave>();
   private slaveSubscription: Subscription;
   public messages = new Array<Globals.Message>();
   private messageSubscription: Subscription;
 
   constructor(public auth: AuthService, private messagesService: MessagesService, private mistressService: MistressService, 
-    private router: Router) {}
+    private modalController: ModalController, private router: Router) {}
+
+  public loading(): boolean {
+    return this.messagesLoading && this.slavesLoading;
+  }
 
   getButtonColor(slave: Globals.Slave): string{
     return (slave?.lastSeenRecent) ? 'success' : 'medium';
@@ -85,30 +92,44 @@ export class MistressHomePage {
   }
 
   public ionViewDidEnter(): void {
-    this.loading = true;
     this.authUserVerifiedSubscription = this.auth.getUserStatusVerified().pipe(
       filter(userVerified => userVerified == true),
       map(() => this.auth.getUserId()),
       filter(id => id != null),
       map(()=> {
-        console.log('ionViewDidEnter', this.auth.getUserId());
-        this.messageSubscription = this.getMessages().subscribe();
-        this.slaveSubscription = this.getSlaves().subscribe();
-      }),
-      map(()=> this.loading = false)
+        this.slaveSubscription = this.getSlaves().pipe(
+          map(() => {
+            this.slavesLoading = false;
+            if(!this.messageSubscription || this.messageSubscription.closed) {
+              this.messageSubscription = this.getMessages().pipe(
+                map(() => this.messagesLoading = false)
+              ).subscribe();
+            }
+          })
+        ).subscribe();
+        
+      })
     ).subscribe();
   }
 
   public ionViewDidLeave(): void {
     this.slaves = new Array<Globals.Slave>();
     this.messages = new Array<Globals.Message>();
-    this.loading = true;
+    this.slavesLoading = true;
+    this.messagesLoading = true;
     if(!this.authUserVerifiedSubscription.closed){this.authUserVerifiedSubscription.unsubscribe()};
     if(!this.slaveSubscription.closed){this.slaveSubscription.unsubscribe()};
     if(!this.messageSubscription.closed){this.messageSubscription.unsubscribe()};
   }
 
-  public navSlave(){}
+  public async newSlave(){
+    const modal = await this.modalController.create({ 
+      component: NewSlaveComponent,
+      backdropDismiss: false,
+      }
+    );
+    modal.present();
+  }
 
   public navDice(){
     return this.router.navigate(['game/dice']);

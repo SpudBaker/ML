@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Auth, signInWithEmailAndPassword, sendPasswordResetEmail, 
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, 
     signOut, user, UserCredential } from '@angular/fire/auth';
-import { doc, docData, Firestore, Timestamp, updateDoc } from '@angular/fire/firestore';
-
+import { collection, doc, docData, Firestore, getDocs, query, setDoc, Timestamp, updateDoc, where } from '@angular/fire/firestore';
 import { BehaviorSubject, EMPTY, from, Observable, Subscription, timer } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
@@ -20,6 +19,18 @@ export class AuthService{
 
     constructor(private auth: Auth, private firestore: Firestore, private router: Router){
         this.getLoginStatus().subscribe();
+    }
+
+    public createUserWithEmailAndPassword(email: string, password: string, displayName: string): Promise<any>{
+        return createUserWithEmailAndPassword(this.auth, email, password).then(async user => {
+            const q = query(collection(this.firestore, "users"), where("email", "==", email));
+            const querySnapshot = await getDocs(q);
+            if(querySnapshot.empty){
+                const usersCollection = collection(this.firestore, "users");
+                setDoc(doc(usersCollection, user.user.uid), {email, mistress: this.user.docID, role: Globals.Role.Slave, displayName });
+            } else {
+            }
+        })
     }
 
     public getAuth(): Auth {

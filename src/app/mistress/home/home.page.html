@@ -11,14 +11,14 @@
     <ion-row>
       <ion-col size="4">
         <ion-grid>
-          <div *ngIf="loading">
+          <div *ngIf="loading()">
             <ion-row>
               <ion-col align="center">
                 <ion-spinner></ion-spinner>
               </ion-col>
             </ion-row>
           </div>
-          <div *ngIf="!loading">
+          <div *ngIf="!loading()">
             <ion-row>
               <ion-col size="12" align="center">
                 <ion-text color="primary">
@@ -27,7 +27,7 @@
               </ion-col>
             </ion-row>
         </div>
-          <div *ngIf="!loading">
+          <div *ngIf="!loading()">
             <div *ngFor="let slave of slaves">
               <ion-row>
                 <ion-col size="1"></ion-col>
@@ -53,7 +53,7 @@
             <ion-row>
               <ion-col size="3"></ion-col>
               <ion-col size="6">
-                <ion-button (click)="auth.signOut()" expand="block" color="primary">New Slave</ion-button>
+                <ion-button (click)="newSlave()" expand="block" color="primary">New Slave</ion-button>
               </ion-col>
               <ion-col size="3"></ion-col>
             </ion-row>
@@ -62,24 +62,24 @@
       </ion-col>
       <ion-col size="4">
         <ion-grid>
-          <div *ngIf="loading">
+          <div *ngIf="loading()">
             <ion-row>
               <ion-col align="center">
                 <ion-spinner></ion-spinner>
               </ion-col>
             </ion-row>
           </div>
-          <div *ngIf="!loading">
+          <div *ngIf="!loading()">
               <ion-row>
                 <ion-col size="2"></ion-col>
                 <ion-col size="10" align="center">
                   <ion-text color="primary">
-                    <h1>Unread Messages</h1>
+                    <h1>Unread Messages ({{messages.length}})</h1>
                   </ion-text>
                 </ion-col>
               </ion-row>
           </div>
-          <div *ngIf="!loading">
+          <div *ngIf="!loading()">
             <div *ngFor="let message of messages">
               <ion-row>
                 <ion-col size="2"></ion-col>
