@@ -20,7 +20,7 @@ export class DiceTemplatePage {
 
   public games: Globals.DiceGameTemplate[]
   private colDataSub: Subscription;
-  private loading = false;
+  public loading = false;
 
   constructor(public authService: AuthService, private gamesService: GamesService, 
     private modalController: ModalController, private router: Router){}

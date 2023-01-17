@@ -131,6 +131,12 @@ export class MistressHomePage {
     modal.present();
   }
 
+  public navMessage(){}
+
+  public navSlave(){
+
+  }
+
   public navDice(){
     return this.router.navigate(['game/dice']);
   }
