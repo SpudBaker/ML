@@ -131,9 +131,9 @@ export class MistressHomePage {
     modal.present();
   }
 
-  public navMessage(){}
+  public navMessage(slave: Globals.Slave){}
 
-  public navSlave(){
+  public navSlave(slave: Globals.Slave){
 
   }
 
