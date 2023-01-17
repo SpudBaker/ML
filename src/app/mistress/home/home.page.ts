@@ -134,7 +134,7 @@ export class MistressHomePage {
   public navMessage(slave: Globals.Slave){}
 
   public navSlave(slave: Globals.Slave){
-
+    return this.router.navigate(['mistress/slave']);
   }
 
   public navDice(){
