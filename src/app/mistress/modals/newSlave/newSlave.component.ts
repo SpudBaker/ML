@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import * as Globals from '../../../../globals';
 import { AuthService } from 'src/app/services/auth';
 import { from, of } from 'rxjs';
 import { catchError, first, switchMap } from 'rxjs/operators';

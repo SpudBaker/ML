@@ -51,7 +51,7 @@ export class MistressHomePage {
 
   private getMessages():Observable<void>{
     this.messages = new Array();
-    return this.messagesService.getMessages().pipe(
+    return this.messagesService.getUnreadMessagesForMistress().pipe(
       map(data => {
         this.messages = new Array<Globals.Message>();
         data.forEach(item => {
@@ -134,7 +134,7 @@ export class MistressHomePage {
   public navMessage(slave: Globals.Slave){}
 
   public navSlave(slave: Globals.Slave){
-    return this.router.navigate(['mistress/slave']);
+    return this.router.navigate(['mistress/slave/' + slave.docID]);
   }
 
   public navDice(){

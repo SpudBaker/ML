@@ -1,11 +1,105 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-       Mistress Slave
+    <ion-buttons slot="start">
+      <ion-icon slot="icon-only"></ion-icon>
+      <ion-icon slot="icon-only" name="home" (click)="navHome()"></ion-icon>
+    </ion-buttons>
+    <ion-title align="center" *ngIf="slave">
+      Slave : {{slave?.displayName}}
+    </ion-title>
+    <ion-title align="center" *ngIf="!slave">
+      <ion-spinner></ion-spinner>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  Mistress Slave
+  <div *ngIf="form">
+    <form [formGroup]="form">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="8" align="center">
+            <ion-grid>
+              <div *ngIf="loading">
+                <ion-row>
+                  <ion-col align="center">
+                    <ion-spinner></ion-spinner>
+                  </ion-col>
+                </ion-row>
+              </div>
+              <div *ngIf="!loading">
+                  <ion-row>
+                    <ion-col size="2"></ion-col>
+                    <ion-col size="10" align="center">
+                      <ion-text color="warning">
+                        <h1>Messages</h1>
+                      </ion-text>
+                    </ion-col>
+                  </ion-row>
+              </div>
+              <div *ngIf="!loading">
+                <ion-row>
+                  <ion-col size="2"></ion-col>
+                  <ion-col size="10">
+                    <ion-card color="medium">
+                      <ion-card-header>
+                        <ion-card-title align="left">
+                          <ion-grid>
+                            <ion-row>
+                              <ion-col align="left">New message</ion-col>
+                              <ion-col align="right">
+                                <ion-button [disabled]="!formValid()" (click)="newMessage()" expand="block" color="success">Send</ion-button>
+                              </ion-col>
+                            </ion-row>
+                          </ion-grid>
+                        </ion-card-title>
+                      </ion-card-header>
+                      <ion-card-content><h1>
+                        <ion-textarea formControlName="message" [autoGrow]="true"></ion-textarea>
+                      </h1>
+                      </ion-card-content>
+                    </ion-card>
+                  </ion-col>
+                </ion-row>
+                <div *ngFor="let message of messages">
+                  <ion-row>
+                    <ion-col size="2"></ion-col>
+                    <ion-col size="10">
+                      <ion-card [color]="getMessageColour(message)">
+                        <ion-card-header>
+                          <ion-card-title align="left">{{getMessageTitle(message)}}</ion-card-title>
+                          <ion-card-subtitle><h1>{{message.message}}</h1></ion-card-subtitle>
+                        </ion-card-header>
+                        <ion-card-content align="right">
+                          <h2>{{getMessageDisplayTime(message)}}</h2>
+                        </ion-card-content>
+                      </ion-card>
+                    </ion-col>
+                  </ion-row>
+                </div>
+              </div>
+          </ion-grid>
+          </ion-col>
+          <ion-col size="4">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="3"></ion-col>
+                <ion-col align="center" size="6">
+                  <ion-button (click)="navDice()" expand="block" color="primary">Dice Game</ion-button>
+                </ion-col>
+                <ion-col size="3"></ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="3"></ion-col>
+                <ion-col align="center" size="6">
+                  <ion-button (click)="delete()" expand="block" color="primary">Delete</ion-button>
+                </ion-col>
+                <ion-col size="3"></ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </form>
+  </div>
 </ion-content>

@@ -5,7 +5,7 @@ import { MistressSlavePage } from './mistressSlave/mistressSlave.page';
 
 const routes: Routes = [
   { path: '', component: MistressHomePage},
-  { path: 'slave', component: MistressSlavePage}
+  { path: 'slave/:slave', component: MistressSlavePage}
 ];
 
 @NgModule({
