@@ -11,6 +11,8 @@ export class MessagesService{
 
     constructor(private authService: AuthService, private firestore: Firestore,){}
 
+    
+
     public getUnreadMessagesForMistress(): Observable<Globals.Message[]>{
         const mistressId = this.authService.getUserId();
         if(!mistressId){return EMPTY}

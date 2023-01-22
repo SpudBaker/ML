@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { collection, collectionData, doc, docSnapshots, DocumentData, DocumentReference, Firestore, getDoc, query, where } from '@angular/fire/firestore';
-import { from, Observable, timer } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { AuthService } from './auth';
 import * as Globals from'../../globals';
@@ -11,14 +11,16 @@ export class MistressService{
 
     constructor(private authService: AuthService, private firestore: Firestore,){}
 
-    public getSlave(docID: string): Promise<Globals.Slave>{
+    public getSlave(docID: string): Observable<Globals.Slave>{
         const d = doc(this.firestore, 'users/' + docID);
-        return getDoc(d)
-        .then(d => {
-            const s:Globals.Slave = d.data() as Globals.Slave;
-            s.docID = docID;
-            return s;
-        })
+        return docSnapshots(d).pipe(
+            map(d => {
+                const s:Globals.Slave = d.data() as Globals.Slave;
+                s.lastSeenRecent = Globals.recent(s.lastSeen);
+                s.docID = docID;
+                return s;
+            })
+        )
     }
 
     public getSlaves(): Observable<Globals.Slave[]>{

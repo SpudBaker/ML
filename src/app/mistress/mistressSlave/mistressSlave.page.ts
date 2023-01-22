@@ -21,6 +21,7 @@ export class MistressSlavePage {
   private messagesSub : Subscription;
   public messages: Globals.Message[];
   public slave: Globals.Slave;
+  private slaveSub: Subscription;
   public loading = true;
 
   constructor(private activatedRoute: ActivatedRoute, private auth: AuthService, private formBuilder: FormBuilder, private messagesService: MessagesService, private mistressService: MistressService, private router: Router) {}
@@ -41,6 +42,22 @@ export class MistressSlavePage {
     return message.incoming ? 'Slave says ...' : 'Mistress says ...'
   }
 
+  public getToolbarColour(): string {
+    if(this.slave){
+      return (this.slave?.lastSeenRecent) ? 'success' : 'primary';
+     } else {
+      return ''
+    }
+  }
+
+  public getToolbarLoginMessage(): string {
+    if(this.slave){
+      return (this.slave.lastSeenRecent) ? 'Online now' : (this.slave.lastSeen ? new Date(this.slave.lastSeen.seconds*1000).toLocaleString() : 'Never logged in');
+    } else {
+      return '';
+    }
+  }
+
   public ionViewDidEnter(){
     this.form = this.formBuilder.group({
       message: ['', Validators.required],
@@ -50,18 +67,21 @@ export class MistressSlavePage {
       map(data => {
         this.messages = data
         this.loading = false;
-        console.log(data);
        
       }) 
     ).subscribe();
-    this.mistressService.getSlave(s).then(val => {
-      this.slave = val; 
-    })
+    this.slaveSub = this.mistressService.getSlave(s).pipe(
+      map(val => {
+        this.slave = val; 
+      })
+    ).subscribe();
   }
 
   public ionViewDidLeave(){
     this.loading = true;
-    if(this.messagesSub && !this.messagesSub.closed){this.messagesSub.unsubscribe()}
+    this.slave = undefined;
+    if(this.messagesSub && !this.messagesSub.closed){this.messagesSub.unsubscribe()};
+    if(this.slaveSub && !this.slaveSub.closed){this.slaveSub.unsubscribe()};
     this.messages = undefined;
   }
 
