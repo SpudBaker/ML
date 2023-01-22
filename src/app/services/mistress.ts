@@ -14,12 +14,16 @@ export class MistressService{
     public getSlave(docID: string): Observable<Globals.Slave>{
         const d = doc(this.firestore, 'users/' + docID);
         return docSnapshots(d).pipe(
-            map(d => {
-                const s:Globals.Slave = d.data() as Globals.Slave;
-                s.lastSeenRecent = Globals.recent(s.lastSeen);
-                s.docID = docID;
-                return s;
-            })
+            switchMap(d => {
+                return timer(0,10000).pipe(
+                    map(() => {
+                        const s:Globals.Slave = d.data() as Globals.Slave;
+                        s.lastSeenRecent = Globals.recent(s.lastSeen);
+                        s.docID = docID;
+                        return s;
+                    })
+                )
+            }) 
         )
     }
 

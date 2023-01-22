@@ -52,7 +52,7 @@ export class MistressSlavePage {
 
   public getToolbarLoginMessage(): string {
     if(this.slave){
-      return (this.slave.lastSeenRecent) ? 'Online now' : (this.slave.lastSeen ? new Date(this.slave.lastSeen.seconds*1000).toLocaleString() : 'Never logged in');
+      return (this.slave.lastSeenRecent) ? 'Online now' : 'last seen : ' + (this.slave.lastSeen ? new Date(this.slave.lastSeen.seconds*1000).toLocaleString() : 'Never logged in');
     } else {
       return '';
     }
