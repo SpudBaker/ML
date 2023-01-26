@@ -11,8 +11,6 @@ export class MessagesService{
 
     constructor(private authService: AuthService, private firestore: Firestore,){}
 
-    
-
     public getUnreadMessagesForMistress(): Observable<Globals.Message[]>{
         const mistressId = this.authService.getUserId();
         if(!mistressId){return EMPTY}
@@ -45,7 +43,7 @@ export class MessagesService{
 
     public newMessage(data: Globals.Message): Promise<any> {
         const colRef = collection(this.firestore, 'messages');
-        return addDoc(colRef,{incoming: data.incoming, message: data.message, mistress: data.mistress, read: true, slave: data.slave, timeStamp: data.timeStamp })
+        return addDoc(colRef,{incoming: data.incoming, message: data.message, mistress: data.mistress, read: data.read, slave: data.slave, timeStamp: data.timeStamp })
     }
 
     

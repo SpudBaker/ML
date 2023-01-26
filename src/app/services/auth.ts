@@ -13,7 +13,6 @@ export class AuthService{
 
     private loggedIn: boolean;
     private updateTimer$: Observable<any>;
-    private updateTimerSubscription: Subscription;
     private user: Globals.User;
     private userStatusVerfied = new BehaviorSubject<boolean>(false); 
 
@@ -71,7 +70,12 @@ export class AuthService{
         return docData(doc(this.firestore, 'users/' + id)).pipe(
           first(), 
           map(doc => {
-            const user = new Globals.User(doc.displayName, doc.email, id, doc.role);
+            let user: Globals.User;
+            if(doc.role == Globals.Role.Slave){
+                user = new Globals.Slave(doc.displayName, doc.email, id, doc.mistress, doc.role);
+            } else {
+                user = new Globals.User(doc.displayName, doc.email, id, doc.role);
+            }
             return user;
           })
         )
@@ -87,6 +91,15 @@ export class AuthService{
 
     public getUserId(): string {
         return this.user?.docID;
+    }
+
+    public getUserMistress(){
+        const u = this.user as Globals.Slave;
+        if(u?.mistress){
+            return u.mistress;
+        } else {
+            return '';
+        }
     }
 
     public getUserStatusVerified(): BehaviorSubject<boolean> {
@@ -109,11 +122,10 @@ export class AuthService{
         this.updateTimer$ = timer(0, 60000).pipe(
             switchMap(() => this.updateTimeStamp())
         );
-        this.updateTimerSubscription = this.updateTimer$.subscribe();
+        this.updateTimer$.subscribe();
     }
 
     private updateTimeStamp(): Promise<any>{
-        console.log('auth service - about to update lastSeen');
         const docRef = doc(this.firestore,'users/'+this.getUserId());
         return updateDoc(docRef, {lastSeen: Timestamp.fromDate(new Date())})
     }
