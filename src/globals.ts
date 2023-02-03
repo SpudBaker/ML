@@ -1,8 +1,36 @@
 import { Timestamp } from "@angular/fire/firestore";
 
+export enum GameStatus {
+  complete = 'complete',
+  PendingSlave = 'pending slave',
+}
+
 export enum Role {
   Mistress = 'Mistress',
   Slave = 'Slave'
+}
+
+export class DiceGame {
+  docID: string;
+  diceGameTemplate: string;
+  mistress: string;
+  slave: string;
+  gameStatus: GameStatus;
+  description: string;
+  result: number;
+  resultTask: string;
+  taskDone: boolean;
+  constructor(docID: string, diceGameTemplate: string, mistress: string, slave: string, gameStatus: GameStatus, description: string, result: number, resultTask: string, taskDone: boolean){
+    this.docID = docID;
+    this.diceGameTemplate = diceGameTemplate;
+    this.mistress = mistress;
+    this.slave = slave;
+    this.gameStatus = gameStatus;
+    this.description = description;
+    this.result = result;
+    this.resultTask = resultTask;
+    this.taskDone = taskDone;
+  }
 }
 
 export class DiceGameTemplate {

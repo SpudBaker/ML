@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, Firestore, limit, orderBy, query, where } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, doc, Firestore, limit, orderBy, query, updateDoc, where } from '@angular/fire/firestore';
 import { EMPTY, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { first, map } from 'rxjs/operators';
 import { AuthService } from './auth';
 import * as Globals from '../../globals';
 
@@ -39,6 +39,20 @@ export class MessagesService{
                 return arrMessages;
             })
         )
+    }
+
+    public markMessagesAsRead(slave: string, mistress: string): Promise<any>{
+        const collectionRef = collection(this.firestore,'messages');
+        const queryRef = query(collectionRef, where('slave', '==', slave), where('mistress', '==', mistress), where('read', '==', false));
+        return collectionData(queryRef, {idField: 'docID'}).pipe(first()).toPromise()
+        .then(data => {
+            const promArray = new Array<Promise<any>>();
+            data.forEach(item => {
+                const docRef = doc(this.firestore, 'messages/' + item.docID);
+                promArray.push(updateDoc(docRef, {read: true}));
+            })
+            return Promise.all(promArray);
+        })
     }
 
     public newMessage(data: Globals.Message): Promise<any> {

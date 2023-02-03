@@ -13,8 +13,6 @@
 </ion-header>
 
 <ion-content>
-  <div *ngIf="form">
-    <form [formGroup]="form">
       <ion-grid>
         <ion-row>
           <ion-col size="8" align="center">
@@ -37,29 +35,31 @@
                   </ion-row>
               </div>
               <div *ngIf="!loading">
-                <ion-row>
-                  <ion-col size="2"></ion-col>
-                  <ion-col size="10">
-                    <ion-card color="medium">
-                      <ion-card-header>
-                        <ion-card-title align="left">
-                          <ion-grid>
-                            <ion-row>
-                              <ion-col align="left">New message</ion-col>
-                              <ion-col align="right">
-                                <ion-button [disabled]="!formValid()" (click)="newMessage()" expand="block" color="success">Send</ion-button>
-                              </ion-col>
-                            </ion-row>
-                          </ion-grid>
-                        </ion-card-title>
-                      </ion-card-header>
-                      <ion-card-content><h1>
-                        <ion-textarea formControlName="message" [autoGrow]="true"></ion-textarea>
-                      </h1>
-                      </ion-card-content>
-                    </ion-card>
-                  </ion-col>
-                </ion-row>
+                <form [formGroup]="formMessage">
+                  <ion-row>
+                    <ion-col size="2"></ion-col>
+                    <ion-col size="10">
+                      <ion-card color="medium">
+                        <ion-card-header>
+                          <ion-card-title align="left">
+                            <ion-grid>
+                              <ion-row>
+                                <ion-col align="left">New message</ion-col>
+                                <ion-col align="right">
+                                  <ion-button [disabled]="!formMessageValid()" (click)="newMessage()" expand="block" color="success">Send</ion-button>
+                                </ion-col>
+                              </ion-row>
+                            </ion-grid>
+                          </ion-card-title>
+                        </ion-card-header>
+                        <ion-card-content><h1>
+                          <ion-textarea formControlName="message" [autoGrow]="true"></ion-textarea>
+                        </h1>
+                        </ion-card-content>
+                      </ion-card>
+                    </ion-col>
+                  </ion-row>
+                </form>
                 <div *ngFor="let message of messages">
                   <ion-row>
                     <ion-col size="2"></ion-col>
@@ -80,18 +80,72 @@
           </ion-grid>
           </ion-col>
           <ion-col size="4">
-            <ion-grid>
-              <ion-row>
-                <ion-col size="3"></ion-col>
-                <ion-col align="center" size="6">
-                  <ion-button  *ngIf="!loading" (click)="navDice()" expand="block" color="primary">Dice Game</ion-button>
-                </ion-col>
-                <ion-col size="3"></ion-col>
-              </ion-row>
-            </ion-grid>
+            <div *ngIf="formGame && gameInProgressLoaded">
+                
+                <ion-grid>
+                  <ion-row>
+                    <ion-col size="3"></ion-col>
+                    <ion-col size="6" align="center">
+                      <ion-text color="warning">
+                        <h1>Dice Game</h1>
+                      </ion-text>
+                    </ion-col>
+                    <ion-col size="3"></ion-col>
+                  </ion-row>
+                </ion-grid>
+                <div *ngIf="gameInProgress">
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col size="3"></ion-col>
+                      <ion-col size="6" align="center">
+                        <ion-text color="warning">
+                          AWAITING SLAVE ACTION : <br/>
+                        </ion-text>
+                      </ion-col>
+                      <ion-col size="3"></ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="3"></ion-col>
+                      <ion-col size="6" align="center">
+                        <ion-text>
+                          {{gameInProgress.description}}
+                        </ion-text>
+                      </ion-col>
+                      <ion-col size="3"></ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </div>
+                <div *ngIf="!gameInProgress">
+                  <form [formGroup]="formGame">
+                  <ion-grid>
+                    <ion-row>
+                      <ion-col size="3"></ion-col>
+                      <ion-col align="center" size="6">
+                        <ion-select formControlName="tplate" interface="popover">
+                          <ion-select-option *ngFor="let template of diceGameTemplates"  [value]="template">{{ template.name }}</ion-select-option>
+                        </ion-select>
+                      </ion-col>
+                      <ion-col size="3"></ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="3"></ion-col>
+                      <ion-col align="center" size="6">
+                        <ion-input formControlName="description" placeholder="enter a description"></ion-input>
+                      </ion-col>
+                      <ion-col size="3"></ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col size="3"></ion-col>
+                      <ion-col align="center" size="6">
+                        <ion-button  [disabled]="!formGameValid()" (click)="newGame()" expand="block" color="success">Instruct</ion-button>
+                      </ion-col>
+                      <ion-col size="3"></ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </form>
+              </div>
+            </div>
           </ion-col>
         </ion-row>
       </ion-grid>
-    </form>
-  </div>
 </ion-content>

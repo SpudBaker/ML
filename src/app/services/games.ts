@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { addDoc,collection, collectionData, deleteDoc, doc, DocumentData, DocumentReference, Firestore, orderBy, query, setDoc, where } from '@angular/fire/firestore';
 import { EMPTY, Observable } from 'rxjs';
+import { first, map } from 'rxjs/operators';
 import { AuthService } from './auth';
 import * as Globals from'../../globals';
 
@@ -22,6 +23,18 @@ export class GamesService{
         const queryRef = query(collectionRef, where('mistress', '==', mistressId), orderBy("name"));
         return collectionData(queryRef, {idField: 'docID'});
     }
+
+    public getOpenGames(slaveID: string): Observable<DocumentData[]>{
+        const collectionRef = collection(this.firestore,'games');
+        const queryRef = query(collectionRef, where('slave', '==', slaveID), where('gameStatus', '!=', Globals.GameStatus.complete));
+        return collectionData(queryRef);
+    }
+
+    public newGame(data: Globals.DiceGame): Promise<any> {
+        const colRef = collection(this.firestore, 'games');
+        return addDoc(colRef,{diceGameTemplate: data.diceGameTemplate, gameStatus: data.gameStatus, mistress: data.mistress, description: data.description, 
+                slave: data.slave, taskDone: data.taskDone });
+     }
 
     public newGameTemplate(data: Globals.DiceGameTemplate): Promise<any> {
        const colRef = collection(this.firestore, 'gameTemplates');

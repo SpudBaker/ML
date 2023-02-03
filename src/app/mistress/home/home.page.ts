@@ -63,7 +63,7 @@ export class MistressHomePage {
 
   public getSlaveName(slaveID: string): string {
     const s = this.slaves.find(item => item.docID == slaveID);
-    return s.displayName;
+    return s?.displayName;
   }
 
   private getSlaves(): Observable<void>{
@@ -135,10 +135,6 @@ export class MistressHomePage {
 
   public navSlave(slave: Globals.Slave){
     return this.router.navigate(['mistress/slave/' + slave.docID]);
-  }
-
-  public navDice(){
-    return this.router.navigate(['game/dice']);
   }
 
   public navDiceTemplate(){

@@ -1,4 +1,5 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import rollADie from 'roll-a-die';
 
 @Component({
   selector: 'app-dice',
@@ -6,29 +7,24 @@ import { Component, ElementRef } from '@angular/core';
   styleUrls: ['dice.page.scss'],
 })
 
+
+
 export class DicePage {
 
-  constructor(private elem: ElementRef){}
+  @ViewChild('divvy') div:ElementRef;
 
-  public rollDice() {
-    //const dice = [...document.querySelectorAll(".die-list")];
-    const dice = this.elem.nativeElement.querySelectorAll('.die-list')
-    dice.forEach(die => {
-      this.toggleClasses(die);
-      die.dataset.roll = 6 //this.getRandomNumber(1, 6);
-    });
+  constructor(){}
+
+  rollDice(){
+    const dice = this.div.nativeElement;
+    console.log(dice);
+    rollADie({element: dice, numberOfDice: 2, callback: this.callback});
   }
-  
-  private toggleClasses(die) {
-    die.classList.toggle("odd-roll");
-    die.classList.toggle("even-roll");
+
+  callback(thing: any){
+    console.log(thing);
   }
-  
-  private getRandomNumber(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+    
 
 }
 
