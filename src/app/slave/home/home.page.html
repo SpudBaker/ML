@@ -6,20 +6,20 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <div *ngIf="form">
-    <form [formGroup]="form">
+  <div *ngIf="formMessage">
+    <form [formGroup]="formMessage">
       <ion-grid>
         <ion-row>
           <ion-col size="8" align="center">
             <ion-grid>
-              <div *ngIf="loading">
+              <div *ngIf="messagesLoading">
                 <ion-row>
                   <ion-col align="center">
                     <ion-spinner></ion-spinner>
                   </ion-col>
                 </ion-row>
               </div>
-              <div *ngIf="!loading">
+              <div *ngIf="!messagesLoading">
                   <ion-row>
                     <ion-col size="2"></ion-col>
                     <ion-col size="10" align="center">
@@ -29,7 +29,7 @@
                     </ion-col>
                   </ion-row>
               </div>
-              <div *ngIf="!loading">
+              <div *ngIf="!messagesLoading">
                 <ion-row>
                   <ion-col size="2"></ion-col>
                   <ion-col size="10">
@@ -40,7 +40,7 @@
                             <ion-row>
                               <ion-col align="left">New message</ion-col>
                               <ion-col align="right">
-                                <ion-button [disabled]="!formValid()" (click)="newMessage()" expand="block" color="success">Send</ion-button>
+                                <ion-button [disabled]="!formMessageValid()" (click)="newMessage()" expand="block" color="success">Send</ion-button>
                               </ion-col>
                             </ion-row>
                           </ion-grid>
@@ -73,11 +73,18 @@
           </ion-grid>
           </ion-col>
           <ion-col size="4">
-            <ion-grid>
+            <ion-grid *ngIf="!gameLoading">
+              <ion-row *ngIf="game">
+                <ion-col size="3"></ion-col>
+                <ion-col align="center" size="6">
+                  <ion-button  *ngIf="!messagesLoading" (click)="playGame()" expand="block" color="success">GAME WAITING</ion-button>
+                </ion-col>
+                <ion-col size="3"></ion-col>
+              </ion-row>
               <ion-row>
                 <ion-col size="3"></ion-col>
                 <ion-col align="center" size="6">
-                  <ion-button  *ngIf="!loading" (click)="auth.signOut()" expand="block" color="primary">Log Out</ion-button>
+                  <ion-button (click)="auth.signOut()" expand="block" color="primary">Log Out</ion-button>
                 </ion-col>
                 <ion-col size="3"></ion-col>
               </ion-row>

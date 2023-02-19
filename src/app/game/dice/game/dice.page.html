@@ -1,13 +1,195 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-       Dice Page
+    <ion-buttons slot="start">
+      <ion-icon slot="icon-only" name="home" (click)="navHome()"></ion-icon>
+    </ion-buttons>
+    <ion-title align="center">
+      Dice Game : {{slave?.displayName}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div #divvy></div>
-  <button type="button" (click)="rollDice()">Roll Dice</button>
-  
+  <div *ngIf="game && gameTemplate">
+    <ion-grid>
+      <ion-row>
+        <ion-col size="8">
+          <ion-grid>
+            <ion-row>
+              <ion-col size="2"></ion-col>
+              <ion-col size="8">
+                <ion-card color="medium">
+                  <ion-card-header>
+                    <ion-card-title>
+                      <ion-grid>
+                        <ion-row>
+                          <ion-col size="8">
+                            <h2>{{game.description}}</h2>
+                          </ion-col>
+                          <ion-col size="2">
+                          </ion-col>
+                          <ion-col size="2">
+                          </ion-col>
+                        </ion-row>
+                        <ion-row>
+                          <ion-col size="8">
+                          </ion-col>
+                          <ion-col size="2">
+                            
+                          </ion-col>
+                          <ion-col size="2">
+                          </ion-col>
+                        </ion-row>
+                      </ion-grid></ion-card-title>
+                  </ion-card-header>
+                  <ion-card-content>
+                    <ion-grid>
+                      <ion-row>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-1.svg"/>
+                        </ion-col>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-1.svg"/>
+                        </ion-col>
+                        <ion-col size="10">
+                          {{gameTemplate.task2}}
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-1.svg"/>
+                        </ion-col>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-2.svg"/>
+                        </ion-col>
+                        <ion-col size="10">
+                          {{gameTemplate.task3}}
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-2.svg"/>
+                        </ion-col>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-2.svg"/>
+                        </ion-col>
+                        <ion-col size="10">
+                          {{gameTemplate.task4}}
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-2.svg"/>
+                        </ion-col>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-3.svg"/>
+                        </ion-col>
+                        <ion-col size="10">
+                          {{gameTemplate.task5}}
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-3.svg"/>
+                        </ion-col>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-3.svg"/>
+                        </ion-col>
+                        <ion-col size="10">
+                          {{gameTemplate.task6}}
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-3.svg"/>
+                        </ion-col>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-4.svg"/>
+                        </ion-col>
+                        <ion-col size="10">
+                          {{gameTemplate.task7}}
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-4.svg"/>
+                        </ion-col>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-4.svg"/>
+                        </ion-col>
+                        <ion-col size="10">
+                          {{gameTemplate.task8}}
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-4.svg"/>
+                        </ion-col>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-5.svg"/>
+                        </ion-col>
+                        <ion-col size="10">
+                          {{gameTemplate.task9}}
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-5.svg"/>
+                        </ion-col>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-5.svg"/>
+                        </ion-col>
+                        <ion-col size="10">
+                          {{gameTemplate.task10}}
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-5.svg"/>
+                        </ion-col>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-6.svg"/>
+                        </ion-col>
+                        <ion-col size="10">
+                          {{gameTemplate.task11}}
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-6.svg"/>
+                        </ion-col>
+                        <ion-col size="1">
+                          <img src="/assets/icon/inverted-dice-6.svg"/>
+                        </ion-col>
+                        <ion-col size="10">
+                          {{gameTemplate.task12}}
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+              <ion-col size="2">
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-col>
+        <ion-col size="4">  
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-button size="large" (click)="rollDice()">Roll Dice</ion-button>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col>
+                <div #divvy></div>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
 </ion-content>
+
